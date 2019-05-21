@@ -4,6 +4,8 @@ import datetime
 dt1 = datetime.datetime(2017, 3, 8, 0, 0, 0)
 dt2 = datetime.datetime(2017, 12, 31, 0, 0, 0)
 
+repositorio = ''
+
 GR = GitRepository('../soletta')
 
 for commit in RepositoryMining('../soletta',since=dt1,to=dt2,filepath="Kconfig").traverse_commits():
@@ -16,17 +18,8 @@ for commit in RepositoryMining('../soletta',since=dt1,to=dt2,filepath="Kconfig")
             diff = modification.diff
             parsed_lines = GR.parse_diff(diff)
             print("Arquivo após mods:\n")
-            # print(modification.source_code)
             lista = modification.source_code.split('\n')
             qtdEmptyLines = 0
-            # Conta quantas linhas há em branco e tira espaço e \t de todas as linhas do arquivo
-            for i in range(len(lista)):
-                if(lista[i].strip() == ''):
-                    qtdEmptyLines += 1
-                lista[i] = lista[i].strip()
-            # Remove linha em branco
-            for i in range(qtdEmptyLines):
-                lista.remove('')
             print(len(lista))
             print(modification.nloc)
             print(lista)
@@ -34,3 +27,26 @@ for commit in RepositoryMining('../soletta',since=dt1,to=dt2,filepath="Kconfig")
             print(parsed_lines['added'])
             print('Linhas removidas:\n')
             print(parsed_lines['deleted'])
+
+
+# Commit adhfaslkdgsakjdf:
+#     arquivo X (mod): ("Remove", "Depends"), ("Added", "Feature")
+#     arquivo Y (mod): ("Modify", "menu"), ("Remove", "Depends")
+
+# Commit adhfaslkdgsakjdf: [("Remove", "Depends"), ("Added", "Feature"), ("Modify", "menu")]
+
+# Teste
+# menu "Bindings"	
+# config USE_NODEJS	
+# 	bool "Node.js bindings"	
+# 	depends on HAVE_NODEJS && HAVE_NODEJS_NPM && HAVE_NODE_GYP
+# 	default n
+# 	help	
+# 		Enable Node.js bindings
+# endmenu
+
+# if(condition1 && condition2)
+
+# if(condiiton1){
+#     if(condition2)
+# }
