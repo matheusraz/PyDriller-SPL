@@ -1,5 +1,6 @@
 from pydriller import RepositoryMining, GitRepository
 import datetime
+from splclassifier import SPLClassifier
 
 dt1 = datetime.datetime(2017, 3, 8, 0, 0, 0)
 dt2 = datetime.datetime(2017, 12, 31, 0, 0, 0)
@@ -8,25 +9,25 @@ repositorio = ''
 
 GR = GitRepository('../soletta')
 
-for commit in RepositoryMining('../soletta',since=dt1,to=dt2,filepath="Kconfig").traverse_commits():
+for commit in RepositoryMining('../soletta',single='a3336160203dd8f8d2ae567238fcb0978bf21e8d').traverse_commits():
     print('Hash {}, author {}'.format(commit.hash, commit.author.name))
     print('\nModificações do commit: {}\n'.format(commit.hash))
     for modification in commit.modifications:
+        files_changing_tags = []
         if(modification.filename.lower() == 'kconfig' and modification.change_type.value == 5):
-            print('Author {} modified {} in commit {}'.format(commit.author.name, modification.filename, commit.hash))
-            print("Diff do arquivo {}".format(modification.filename))
+            # print('Author {} modified {} in commit {}'.format(commit.author.name, modification.filename, commit.hash))
+            # print("Diff do arquivo {}".format(modification.filename))
             diff = modification.diff
             parsed_lines = GR.parse_diff(diff)
-            print("Arquivo após mods:\n")
-            lista = modification.source_code.split('\n')
-            qtdEmptyLines = 0
-            print(len(lista))
-            print(modification.nloc)
-            print(lista)
-            print("Linhas adicionadas:\n")
-            print(parsed_lines['added'])
-            print('Linhas removidas:\n')
-            print(parsed_lines['deleted'])
+            added = parsed_lines['added']
+            removed = parsed_lines['deleted']
+            classifier = SPLClassifier(added,removed)
+            print("Added:\n")
+            print(classifier.added)
+            print("Removed:\n")
+            print(classifier.removed)
+            print("Resultado:\n")
+            print(classifier.classify())
 
 
 # Commit adhfaslkdgsakjdf:
