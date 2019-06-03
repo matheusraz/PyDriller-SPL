@@ -9,6 +9,10 @@ repositorio = ''
 
 GR = GitRepository('../soletta')
 
+#
+# d458061abec39e7a0693c49f96b7ab3378c157d9 - only Removeds
+# 2c727429e244c074a45c0d99b8ba57ad7fb6df36 - both
+
 for commit in RepositoryMining('../soletta',single='2c727429e244c074a45c0d99b8ba57ad7fb6df36').traverse_commits():
     print('Hash {}, author {}'.format(commit.hash, commit.author.name))
     print('\nModificações do commit: {}\n'.format(commit.hash))
