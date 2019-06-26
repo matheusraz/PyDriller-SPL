@@ -3,10 +3,6 @@ from bson import json_util
 import datetime
 import json
 
-def myconverter(o):
-    if isinstance(o, datetime.datetime):
-        return o.__str__()
-
 def getManualResults():
     data = get_data("results-manual.ods")
     allHashs = []

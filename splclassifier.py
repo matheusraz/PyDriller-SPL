@@ -84,11 +84,15 @@ class SPLClassifier:
                     elif("config" in item[1]):
                         return ("Added","Feature")
                     elif("depends" in item[1]):
-                        return ("Added","Depends")
+                        return ("Added","Depends") # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
                     elif("default" in item[1]):
-                        return ("Added","Default")
+                        return ("Added","Default") # Possiveis = New, Added Remove, Modify OBS: Added para "if" - New sem "if"
                     elif("select" in item[1]):
-                        return ("Added","Select")
+                        # Verificar se é new ou added
+                        # return("New", "Select")
+                        return ("Added","Select") # Possiveis = New, Added, Remove e Modify OBS: Added para Anterior havendo select
+                                                  #                                              New se não houver select antes
+
                 else:
                     if("menu" in item[1]):
                         return ("Modify","Menu")

@@ -47,11 +47,11 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
                 kconfig_commit_tags.append(file_tag)
     print("Commit {}".format(commit.hash))
     if(len(kconfig_commit_tags) > 0):
-        kconfig_commit_tags = str(kconfig_commit_tags).replace(',','|')
+        kconfig_commit_tags = str(kconfig_commit_tags).replace(',',' |')
     else:
-        kconfig_commit_tags = 'no-tag-changed'
+        kconfig_commit_tags = 'rename'
     if(len(makefile_commit_tags) > 0):
-        makefile_commit_tags = str(makefile_commit_tags).replace(',','|')
+        makefile_commit_tags = str(makefile_commit_tags).replace(',',' |')
     else:
         makefile_commit_tags = 'no-tag-changed'
     mountStr = '{},{},{},{}\n'.format(commit.hash,commit.author.name,kconfig_commit_tags,makefile_commit_tags)    
