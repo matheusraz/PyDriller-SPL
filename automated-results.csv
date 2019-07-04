@@ -8,7 +8,7 @@ da5f77ff470f49e90797db27a8923c988c099e96,Bruno Dilly,[('Modify' | 'Default') | (
 f10452a4470ef17398d9ddbe166d7fa9c43a6e56,Murilo Belluzzo,[('Added' | 'Depends')],no-tag-changed
 b73f5a6a2425d3c88a99e7d7026a7c4303b56a56,Murilo Belluzzo,[('Remove' | 'Menu') | ('Added' | 'Menu') | ('Added' | 'Depends')],no-tag-changed
 d74314d1747fd56398b03140030e52fc7806d215,Murilo Belluzzo,[('Remove' | 'Feature') | ('Modify' | 'Feature') | ('Remove' | 'Default') | ('Added' | 'Feature') | ('Added' | 'Depends') | ('Added' | 'Default')],no-tag-changed
-229f9730f09043c5e23c8bb2fb2fcd1153a1a4c6,Murilo Belluzzo,[('Added' | 'Select') | ('Modify' | 'Feature')],no-tag-changed
+229f9730f09043c5e23c8bb2fb2fcd1153a1a4c6,Murilo Belluzzo,[('New' | 'Select') | ('Modify' | 'Feature')],no-tag-changed
 75d22cbac231fea8ff88fed445a8e221f1c3aa78,Gustavo Sverzut Barbieri,[('Modify' | 'Depends')],no-tag-changed
 769c8e5dc82bcd1a6f638eac51821a9c791363ad,Flavio Ceolin,[('Modify' | 'Depends')],no-tag-changed
 f0258d0e629c440d7f01c44f91ad2180270a5044,Flavio Ceolin,[('Added' | 'Depends')],no-tag-changed
@@ -36,7 +36,7 @@ fb5d1ffa0fe4b33f70688911aab8bfa9d5a15896,Otavio Pontes,[('Modify' | 'Depends')],
 1570a568171447c303f255977ad15592d3fd5d8d,Bruno Dilly,[('Modify' | 'Feature') | ('Modify' | 'Default') | ('Modify' | 'Depends')],no-tag-changed
 c52c778a0277e4703feb7e55de9ca5a3a23dadd5,Flavio Ceolin,[('Modify' | 'Depends')],no-tag-changed
 2cf672ae0cc53ee5b04829d6e44ca8c250c8f30d,Ederson de Souza,[('Modify' | 'Depends')],no-tag-changed
-b4abd4fa77596ecde5946889a1fdd07138ced7b4,Flavio Ceolin,[('Added' | 'Depends')],no-tag-changed
+b4abd4fa77596ecde5946889a1fdd07138ced7b4,Flavio Ceolin,[('New' | 'Depends')],no-tag-changed
 7c596a4bccd16c84e66422b6f81e7575bb3f866a,Otavio Pontes,[('Modify' | 'Depends')],no-tag-changed
 3c888d59414ea7ca03bcecdf130aa553d3d106ad,Bruno Dilly,[('Added' | 'Depends')],no-tag-changed
 22b5d3c155b27e57b1c4464ba31f046744127bc8,Ederson de Souza,[('Added' | 'Select')],no-tag-changed
@@ -47,4 +47,4 @@ d368dd74d3f206e9a321f3681752a3ff960fb8ee,Flavio Ceolin,[('Modify' | 'Depends')],
 199fe960603aebe5c82d42e594cfc09049d8edb8,Gustavo Lima Chaves,[('Modify' | 'Depends')],no-tag-changed
 e9be8920202360664d00304e4c92dbbd3f7b52f3,Gustavo Lima Chaves,[('Added' | 'Select') | ('Modify' | 'Select')],no-tag-changed
 fa7f6e4c8099e18ec7381605e392a6c8cdf24cf2,Iván Briano,[('Modify' | 'Depends')],no-tag-changed
-83cdfb5bb874861f4165107f364aa68035e188d9,Guilherme Iscaro de Godoy,[('Added' | 'Depends') | ('Modify' | 'Depends')],no-tag-changed
+83cdfb5bb874861f4165107f364aa68035e188d9,Guilherme Iscaro de Godoy,[('New' | 'Depends') | ('Added' | 'Depends') | ('Modify' | 'Depends')],no-tag-changed

@@ -19,6 +19,7 @@ GR = GitRepository('../soletta')
 listaCommits = getManualResults()
 listaCommitResults = ['Hash,author,KC-Tags,MF-Tags\n']
 
+# for commit in RepositoryMining('../soletta',single='da5f77ff470f49e90797db27a8923c988c099e96').traverse_commits():
 for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_commits():
     # print('Hash {}, author {}'.format(commit.hash, commit.author.name))
     # print('\nModificações do commit: {}\n'.format(commit.hash))
@@ -34,7 +35,9 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
             parsed_lines = GR.parse_diff(diff)
             added = parsed_lines['added']
             removed = parsed_lines['deleted']
-            classifier = SPLClassifier(added,removed)
+            file_source_code = modification.source_code.split('\n')
+            # print(file_source_code)
+            classifier = SPLClassifier(added, removed, file_source_code)
             # print("Added:\n")
             # print(classifier.added)
             # print("Removed:\n")

@@ -1,8 +1,9 @@
 class SPLClassifier:
     
-    def __init__(self,added=[],removed=[]):
+    def __init__(self,added=[],removed=[],source_code=None):
         self.added = added
         self.removed = removed
+        self.source_code = source_code
     
     def setAdded(self,lista):
         self.added = lista
@@ -84,14 +85,23 @@ class SPLClassifier:
                     elif("config" in item[1]):
                         return ("Added","Feature")
                     elif("depends" in item[1]):
-                        return ("Added","Depends") # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
+                        if("&&" in item[1]):
+                            return ("Added","Depends") # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
+                        else:
+                            return ("New","Depends")
                     elif("default" in item[1]):
-                        return ("Added","Default") # Possiveis = New, Added Remove, Modify OBS: Added para "if" - New sem "if"
+                        if("if" in item[1]):
+                            return ("Added","Default") # Possiveis = New, Added Remove, Modify OBS: Added para "if" - New sem "if"
+                        else:
+                            return ("New", "Default")
                     elif("select" in item[1]):
                         # Verificar se é new ou added
                         # return("New", "Select")
-                        return ("Added","Select") # Possiveis = New, Added, Remove e Modify OBS: Added para Anterior havendo select
+                        if('select' in self.source_code[item[0]-2]):
+                            return ("Added","Select") # Possiveis = New, Added, Remove e Modify OBS: Added para Anterior havendo select
                                                   #                                              New se não houver select antes
+                        else:
+                            return ("New","Select")
 
                 else:
                     if("menu" in item[1]):
