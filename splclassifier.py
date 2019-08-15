@@ -1,3 +1,5 @@
+import re
+
 class SPLClassifier:
     
     def __init__(self,added=[],removed=[],source_code=None):
@@ -31,7 +33,6 @@ class SPLClassifier:
             newRemoved = []
             newModified = []
             tam,listaLonga,listaCurta = (len(added)-1,added,removed) if len(added) > len(removed) else (len(removed)-1,removed,added)
-            # print("LONGA = ADDED") if(listaLonga == added) else print("LONGA = REMOVED")
             for i in range(tam+1):
                 j = i
                 currentLongo = listaLonga[i]
@@ -65,114 +66,129 @@ class SPLClassifier:
 
     def verifyClass(self,item, check):
         if(type(item) != list):
-            if("source \"" not in item[1]):
-                if(check == "Removed"):
-                    if("menu" in item[1]):
-                        return ("Remove","Menu")
-                    elif("config" in item[1]):
-                        return ("Remove","Feature")
-                    elif('bool' in item[1] or 'option' in item[1] or 'prompt' in item[1]):
-                        return ("Modify","Feature")
-                    elif("depends" in item[1]):
-                        return ("Remove","Depends")
-                    elif("default" in item[1]):
-                        return ("Remove","Default")
-                    elif("select " in item[1]):
-                        return ("Remove","Select")
-                elif(check == "Added"):
-                    if("menu" in item[1]):
-                        return ("Added","Menu")
-                    elif("config" in item[1]):
-                        return ("Added","Feature")
-                    elif("depends" in item[1]):
-                        if("&&" in item[1]):
-                            return ("Added","Depends") # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
-                        else:
-                            return ("New","Depends")
-                    elif("default" in item[1]):
-                        if("if" in item[1]):
-                            return ("Added","Default") # Possiveis = New, Added Remove, Modify OBS: Added para "if" - New sem "if"
-                        else:
-                            return ("New", "Default")
-                    elif("select" in item[1]):
-                        # Verificar se é new ou added
-                        # return("New", "Select")
-                        if('select' in self.source_code[item[0]-2]):
-                            return ("Added","Select") # Possiveis = New, Added, Remove e Modify OBS: Added para Anterior havendo select
-                                                  #                                              New se não houver select antes
-                        else:
-                            return ("New","Select")
+            item = (item[0], item[1].strip())
+            if(check == "Removed"):
+                if(re.match(r'^menu \"w+\"', item[1]) != None):
+                    return ("Remove","Menu")
+                elif(re.match(r'^config \S+', item[1]) != None):
+                    return ("Remove","Feature")
+                elif((re.match(r'^bool \"w+\"', item[1]) != None) or (re.match(r'^option \"w+\"', item[1]) != None) or (re.match(r'^prompt \"w+\"', item[1]) != None)):
+                    return ("Modify","Feature")
+                elif(re.match(r'^depends on \S+', item[1]) != None):
+                    return ("Remove","Depends")
+                elif(re.match(r'^default \S', item[1]) != None):
+                    return ("Remove","Default")
+                elif(re.match(r'^select \S+', item[1]) != None):
+                    return ("Remove","Select")
+            elif(check == "Added"):
+                if(re.match(r'^menu \"w+\"', item[1]) != None):
+                    return ("Added","Menu")
+                elif(re.match(r'^config \S+', item[1]) != None):
+                    return ("Added","Feature")
+                elif(re.match(r'^depends on \S+', item[1]) != None):
+                    if("&&" in item[1]):
+                        return ("Added","Depends") # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
+                    else:
+                        return ("New","Depends")
+                elif(re.match(r'^default \S', item[1]) != None):
+                    if("if" in item[1]):
+                        return ("Added","Default") # Possiveis = New, Added Remove, Modify OBS: Added para "if" - New sem "if"
+                    else:
+                        return ("New", "Default")
+                elif(re.match(r'^select \S+', item[1]) != None):
+                    # Verificar se é new ou added
+                    # return("New", "Select")
+                    if(re.match(r'^select \S+', self.source_code[item[0]-2]) != None):
+                        return ("Added","Select") # Possiveis = New, Added, Remove e Modify OBS: Added para Anterior havendo select
+                                                #                                              New se não houver select antes
+                    else:
+                        return ("New","Select")
 
-                else:
-                    if("menu" in item[1]):
-                        return ("Modify","Menu")
-                    elif("config" in item[1]):
-                        return ("Modify","Feature")
-                    elif('bool' in item[1] or 'option' in item[1] or 'prompt' in item[1]):
-                        return ("Modify","Feature")
-                    elif("depends" in item[1]):
-                        return ("Modify","Depends")
-                    elif("default" in item[1]):
-                        return ("Modify","Default")
-                    elif("select" in item[1]):
-                        return ("Modify","Select")
+            else:
+                # MUDAR DEFAULT PRA "\S+" E USAR STRIP DO JEITO COMO ESTÁ AQUI EM CIMA PARA REGEX FUNCIONAR
+                if(re.match(r'^menu \"w+\"', item[1]) != None):
+                    return ("Modify","Menu")
+                elif(re.match(r'^config \S+', item[1]) != None):
+                    return ("Modify","Feature")
+                elif((re.match(r'^bool \"w+\"', item[1]) != None) or (re.match(r'^option \"w+\"', item[1]) != None) or (re.match(r'^prompt \"w+\"', item[1]) != None)):
+                    return ("Modify","Feature")
+                elif(re.match(r'^depends on \S+', item[1]) != None):
+                    return ("Modify","Depends")
+                elif(re.match(r'^default \S', item[1]) != None):
+                    return ("Modify","Default")
+                elif(re.match(r'^select \S+', item[1]) != None):
+                    return ("Modify","Select")
                 
         else:
             result = []
             if(check == 'Added'):
                 for line in item:
-                    if("source \"" not in line[1]):
-                        if("menu" in line[1]):
-                            partial = ("Added","Menu")
+                    line = (line[0], line[1].strip())
+                    if(re.match(r'^menu \"w+\"', line[1]) != None):
+                        partial = ("Added","Menu")
+                        if(partial not in result):
+                            result.append(partial)
+                    elif(re.match(r'^config \S+', line[1]) != None):
+                        partial = ("Added","Feature")
+                        if(partial not in result):
+                            result.append(partial)
+                    elif(re.match(r'^depends on \S+', line[1]) != None):
+                        if("&&" in line[1]):
+                            partial = ("Added","Depends")
                             if(partial not in result):
-                                result.append(partial)
-                        elif("config" in line[1]):
-                            partial = ("Added","Feature")
-                            if(partial not in result):
-                                result.append(partial)
-                        elif('bool' in line[1] or 'option' in line[1] or 'prompt' in line[1]):
-                            partial = ("Modify","Feature")
-                            if(partial not in result):
-                                result.append(partial)
-                        elif("depends" in line[1]):
+                                result.append(partial) # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
+                        else:
                             partial = ("Added","Depends")
                             if(partial not in result):
                                 result.append(partial)
-                        elif("default" in line[1]):
+                    elif(re.match(r'^default \S', line[1]) != None):
+                        if("if" in line[1]):
                             partial = ("Added","Default")
                             if(partial not in result):
+                                result.append(partial) # Possiveis = New, Added Remove, Modify OBS: Added para "if" - New sem "if"
+                        else:
+                            partial = ("New","Default")
+                            if(partial not in result):
                                 result.append(partial)
-                        elif("select" in line[1]):
+                    elif(re.match(r'^select \S+', line[1]) != None):
+                        # Verificar se é new ou added
+                        # return("New", "Select")
+                        if(re.match(r'^select \S+', self.source_code[line[0]-2]) != None):
                             partial = ("Added","Select")
+                            if(partial not in result):
+                                result.append(partial) # Possiveis = New, Added, Remove e Modify OBS: Added para Anterior havendo select
+                                                #                                              New se não houver select antes
+                        else:
+                            partial = ("New","Select")
                             if(partial not in result):
                                 result.append(partial)
             else:
                 for line in item:
-                    if("source \"" not in line[1]):
-                        if("menu" in line[1]):
-                            partial = ("Remove","Menu")
-                            if(partial not in result):
-                                result.append(partial)
-                        elif("config" in line[1]):
-                            partial = ("Remove","Feature")
-                            if(partial not in result):
-                                result.append(partial)
-                        elif('bool' in line[1] or 'option' in line[1] or 'prompt' in line[1]):
-                            partial = ("Modify","Feature")
-                            if(partial not in result):
-                                result.append(partial)
-                        elif("depends" in line[1]):
-                            partial = ("Remove","Depends")
-                            if(partial not in result):
-                                result.append(partial)
-                        elif("default" in line[1]):
-                            partial = ("Remove","Default")
-                            if(partial not in result):
-                                result.append(partial)
-                        elif("select" in line[1]):
-                            partial = ("Remove","Select")
-                            if(partial not in result):
-                                result.append(partial)
+                    line = (line[0], line[1].strip())
+                    if(re.match(r'^menu \"w+\"', line[1]) != None):
+                        partial = ("Remove","Menu")
+                        if(partial not in result):
+                            result.append(partial)
+                    elif(re.match(r'^config \S+', line[1]) != None):
+                        partial = ("Remove","Feature")
+                        if(partial not in result):
+                            result.append(partial)
+                    elif((re.match(r'^bool \"w+\"', line[1]) != None) or (re.match(r'^option \"w+\"', line[1]) != None) or (re.match(r'^prompt \"w+\"', line[1]) != None)):
+                        partial = ("Modify","Feature")
+                        if(partial not in result):
+                            result.append(partial)
+                    elif(re.match(r'^depends on \S+', line[1]) != None):
+                        partial = ("Remove","Depends")
+                        if(partial not in result):
+                            result.append(partial)
+                    elif(re.match(r'^default \S', line[1]) != None):
+                        partial = ("Remove","Default")
+                        if(partial not in result):
+                            result.append(partial)
+                    elif(re.match(r'^default \S', line[1]) != None):
+                        partial = ("Remove","Select")
+                        if(partial not in result):
+                            result.append(partial)
             return result
 
     def classifyMakefile(self):

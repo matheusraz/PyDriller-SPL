@@ -86,3 +86,30 @@ arq.writelines(listaCommitResults)
 # if(condiiton1){
 #     if(condition2)
 # }
+
+
+
+
+# obj-$(PRINTER) += printers.mod
+
+
+# obj-$(PARSERS) += parsers.mod
+# obj-$(PARSERS) += $(LALALA)
+
+
+
+# ifdef ($(IDK),)
+# -include LALALA.gen
+# endif
+
+
+# ifneq ($(HAVE_KCONFIG_CONFIG),)
+# -include Makefile.gen
+# endif
+
+
+
+
+
+
+
