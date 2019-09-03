@@ -68,9 +68,14 @@ for line in range(len(automaticos)):
 
 print('Taxa de acerto por comparação total: {0:.2f}%'.format(stringCompleta))
 print('Taxa de acerto por subconjuntos: {0:.2f}%'.format(acertos/totalTags*100))
-print(commitsDiff[1:])
-print(len(commitsDiff[1:]))
+# print(commitsDiff[1:])
+# print(len(commitsDiff[1:]))
 
 # config TESTE_FEATURE:
 #     select x
 #     default y
+
+
+# config abestalhado:
+#     select x
+#     depends on LINUX && UBUNTU

@@ -86,10 +86,7 @@ class SPLClassifier:
                 elif(re.match(r'^config \S+', item[1]) != None):
                     return ("Added","Feature")
                 elif(re.match(r'^depends on \S+', item[1]) != None):
-                    if("&&" in item[1]):
-                        return ("Added","Depends") # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
-                    else:
-                        return ("New","Depends")
+                    return ("New","Depends")
                 elif(re.match(r'^default \S', item[1]) != None):
                     if("if" in item[1]):
                         return ("Added","Default") # Possiveis = New, Added Remove, Modify OBS: Added para "if" - New sem "if"
