@@ -113,7 +113,11 @@ class SPLClassifier:
                 elif((re.match(r'^bool \"w+\"', item[1]) != None) or (re.match(r'^option \"w+\"', item[1]) != None) or (re.match(r'^prompt \"w+\"', item[1]) != None)):
                     return ("Modify","Feature")
                 elif(re.match(r'^depends on \S+', item[1]) != None):
-                    return ("Modify","Depends")
+                    if("&&" in item[1]):
+                        return ("Added","Depends") # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
+                    else:
+                        return ("Modify","Depends")
+                    # return ("Modify","Depends")
                 elif(re.match(r'^default \S', item[1]) != None):
                     return ("Modify","Default")
                 elif(re.match(r'^select \S+', item[1]) != None):
