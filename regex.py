@@ -20,20 +20,22 @@ st2 = 'I would like to select any values'
 # ifdef
 # build
 
+# --------------- MAPPING ---------------
 # dale = 'obj-core-$(MAINLOOP_GLIB)-extra-cflags += $(GLIB_CFLAGS)'
 # res = re.match(r'^\S* := \S*', dale)
 # res2 = re.match(r'^\S* \+= \S*', dale)
 # if(res != None or res2 != None):
 #     print('MAPPING')
 
-dale = 'ifdef LINUX'
+# --------------- IFDEF ---------------
+# dale = 'ifdef LINUX'
+# res = re.match(r'^ifeq \S*', dale)
+# res2 = re.match(r'^ifneq \S*', dale)
+# res3 = re.match(r'^ifdef \S*', dale)
+# if(res != None or res2 != None or res3 != None):
+#     print('IFDEF')
 
-res = re.match(r'^ifeq \S*', dale)
-res2 = re.match(r'^ifneq \S*', dale)
-res3 = re.match(r'^ifdef \S*', dale)
 
-if(res != None or res2 != None or res3 != None):
-    print('IFDEF')
 
 
 
