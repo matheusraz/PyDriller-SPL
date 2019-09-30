@@ -24,33 +24,25 @@ features = getSPLFeatures(listaCommits)
 
 # for commit in RepositoryMining('../soletta',single='da5f77ff470f49e90797db27a8923c988c099e96').traverse_commits():
 for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_commits():
-    # print('Hash {}, author {}'.format(commit.hash, commit.author.name))
-    # print('\nModificações do commit: {}\n'.format(commit.hash))
+    print(commit.hash)
     kconfig_commit_tags = []
     makefile_commit_tags = []
     commitResults = []
     for modification in commit.modifications:
         files_changing_tags = []
-        if('kconfig' in modification.filename.lower() and modification.change_type.value == 5):
-            # print('Author {} modified {} in commit {}'.format(commit.author.name, modification.filename, commit.hash))
-            # print("Diff do arquivo {}".format(modification.filename))
+        if(('kconfig' in modification.filename.lower() or 'makefile' in modification.filename.lower()) and modification.change_type.value == 5):
             diff = modification.diff
             parsed_lines = GR.parse_diff(diff)
             added = parsed_lines['added']
             removed = parsed_lines['deleted']
             file_source_code = modification.source_code.split('\n')
-            # print(file_source_code)
             classifier = SPLClassifier(added, removed, file_source_code)
-            # print("Added:\n")
-            # print(classifier.added)
-            # print("Removed:\n")
-            # print(classifier.removed)
-            # print("\nResultado:\n")
-            files_changing_tags = classifier.classify()
-            # print(files_changing_tags)
+            files_changing_tags = classifier.classify(modification.filename.lower(),features)
         for file_tag in files_changing_tags:
-            if(file_tag not in kconfig_commit_tags):
+            if(modification.filename.lower() == 'kconfig' and (file_tag not in kconfig_commit_tags)):
                 kconfig_commit_tags.append(file_tag)
+            elif(modification.filename.lower() == 'kconfig' and (file_tag not in kconfig_commit_tags)):
+                makefile_commit_tags.append(file_tag)
     print("Commit {}".format(commit.hash))
     if(len(kconfig_commit_tags) > 0):
         kconfig_commit_tags = str(kconfig_commit_tags).replace(',',' |')

@@ -13,18 +13,24 @@ class SPLClassifier:
     def setRemoved(self,lista):
         self.removed = lista
     
-    def classify(self):
+    def classify(self, file_type, features):
         removed = self.removed
         added = self.added
         result = []
 
         #Classificação caso só haja remoções no arquivo
         if(len(removed) > 0 and len(added) == 0):
-            return self.verifyClass(removed,'Removed')
+            if(file_type == 'kconfig'):
+                return self.kconfigClass(removed,'Removed')
+            else:
+                return self.classifyMakefile(removed,'Removed',features)
 
         #Classificação caso só haja adições no arquivo
         elif(len(added) > 0 and len(removed) == 0):
-            return self.verifyClass(added,'Added')
+            if(file_type == 'kconfig'):
+                return self.kconfigClass(added,'Added')
+            else:
+                return self.classifyMakefile(added,'Added',features)
 
         #Clasificação caso haja possíveis modificações
         else:
@@ -40,20 +46,29 @@ class SPLClassifier:
                 while(j < len(listaCurta) and not foundModify):
                     currentCurto = listaCurta[j]
                     if(((currentCurto[0]+correctLines == currentLongo[0]+correctLines) or (currentCurto[1] == currentLongo[1])) and currentCurto[1] != ''):
-                        value = self.verifyClass(currentCurto,'Modify')
+                        if(file_type == 'kconfig'):
+                            value = self.kconfigClass(currentCurto,'Modify')
+                        else:
+                            value = self.classifyMakefile(currentCurto,'Modify',features)
                         if(value not in newModified):
                             newModified.append(value)
                         foundModify = True
                     j += 1
                 if(not foundModify and currentLongo[1] != ''):
                     if(listaLonga == added):
-                        value = self.verifyClass(currentLongo,'Added')
+                        if(file_type == 'kconfig'):
+                            value = self.kconfigClass(currentLongo,'Added')
+                        else :
+                            value = self.classifyMakefile(currentLongo,'Added',features)
                         if(value not in newAdded):
                             newAdded.append(value)
                         correctLines += 1
                             
                     else:
-                        value = self.verifyClass(currentLongo,'Removed')
+                        if(file_type == 'kconfig'):
+                            value = self.kconfigClass(currentLongo,'Removed')
+                        else:
+                            value = self.classifyMakefile(currentLongo,'Removed',features)
                         if(value not in newRemoved):
                             newRemoved.append(value)
                         correctLines -= 1
@@ -64,7 +79,7 @@ class SPLClassifier:
             return result
                         
 
-    def verifyClass(self,item, check):
+    def kconfigClass(self,item, check):
         if(type(item) != list):
             item = (item[0], item[1].strip())
             if(check == "Removed"):
@@ -192,6 +207,62 @@ class SPLClassifier:
                             result.append(partial)
             return result
 
-    def classifyMakefile(self):
-        print("TODO")
-        # TODO
+    def classifyMakefile(self, item, check, features):
+        if(type(item) != list):
+            item = (item[0], item[1].strip())
+            if(check == "Removed"):
+                if((re.match(r'^\S* := \S*', item[1]) != None and item[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', item[1]) != None) and item[1].replace(' ', '').strip().split('+=')[0]):
+                    return ("Remove","Mapping")
+                elif(re.match(r'^ifeq \S*', item[1]) != None or re.match(r'^ifneq \S*', item[1]) != None or re.match(r'^ifdef \S*', item[1]) != None):
+                    return ("Remove","ifdef")
+                else:
+                    return ("Remove","build")
+            elif(check == "Added"):
+                if((re.match(r'^\S* := \S*', item[1]) != None and item[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', item[1]) != None) and item[1].replace(' ', '').strip().split('+=')[0]):
+                    return ("Added","Mapping")
+                elif(re.match(r'^ifeq \S*', item[1]) != None or re.match(r'^ifneq \S*', item[1]) != None or re.match(r'^ifdef \S*', item[1]) != None):
+                    return ("Added","ifdef")
+                else:
+                    return ("Added","build")
+
+            else:
+                if((re.match(r'^\S* := \S*', item[1]) != None and item[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', item[1]) != None) and item[1].replace(' ', '').strip().split('+=')[0]):
+                    return ("Modify","Mapping")
+                elif(re.match(r'^ifeq \S*', item[1]) != None or re.match(r'^ifneq \S*', item[1]) != None or re.match(r'^ifdef \S*', item[1]) != None):
+                    return ("Modify","ifdef")
+                else:
+                    return ("Modify","build")
+                
+        else:
+            result = []
+            if(check == 'Added'):
+                for line in item:
+                    line = (line[0], line[1].strip())
+                    if((re.match(r'^\S* := \S*', line[1]) != None and line[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', line[1]) != None) and line[1].replace(' ', '').strip().split('+=')[0]):
+                        partial = ("Added","Mapping")
+                        if(partial not in result):
+                            result.append(partial)
+                    elif(re.match(r'^ifeq \S*', line[1]) != None or re.match(r'^ifneq \S*', line[1]) != None or re.match(r'^ifdef \S*', line[1]) != None):
+                        partial = ("Added","ifdef")
+                        if(partial not in result):
+                            result.append(partial)
+                    else:
+                        partial = ("Added","build")
+                        if(partial not in result):
+                            result.append(partial)
+            else:
+                for line in item:
+                    line = (line[0], line[1].strip())
+                    if((re.match(r'^\S* := \S*', line[1]) != None and line[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', line[1]) != None) and line[1].replace(' ', '').strip().split('+=')[0]):
+                        partial = ("Remove","Mapping")
+                        if(partial not in result):
+                            result.append(partial)
+                    elif(re.match(r'^ifeq \S*', line[1]) != None or re.match(r'^ifneq \S*', line[1]) != None or re.match(r'^ifdef \S*', line[1]) != None):
+                        partial = ("Remove","ifdef")
+                        if(partial not in result):
+                            result.append(partial)
+                    else:
+                        partial = ("Remove","build")
+                        if(partial not in result):
+                            result.append(partial)
+            return result
