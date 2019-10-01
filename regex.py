@@ -35,6 +35,11 @@ st2 = 'I would like to select any values'
 # if(res != None or res2 != None or res3 != None):
 #     print('IFDEF')
 
+dale = 'adfadf-$(KDBUS)-asdfasdfa += asdhfisadhflaskjdf'
+result = re.search(r'\S*\$\((.*)\)\S* \+= \S*', dale)
+if(result):
+    print(result.group(1))
+
 
 
 

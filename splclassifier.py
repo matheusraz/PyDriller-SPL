@@ -211,26 +211,37 @@ class SPLClassifier:
         if(type(item) != list):
             item = (item[0], item[1].strip())
             if(check == "Removed"):
-                if((re.match(r'^\S* := \S*', item[1]) != None and item[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', item[1]) != None) and item[1].replace(' ', '').strip().split('+=')[0]):
+                res1 = re.search(r'^\S*\$\((.*)\)\S* := \S*', item[1])
+                res2 = re.search(r'^\S*\$\((.*)\)\S* \+= \S*', item[1])
+                if((res1 != None and res1.group(1) in features) or (res2 != None and res2.group(1) in features)):
                     return ("Remove","Mapping")
                 elif(re.match(r'^ifeq \S*', item[1]) != None or re.match(r'^ifneq \S*', item[1]) != None or re.match(r'^ifdef \S*', item[1]) != None):
                     return ("Remove","ifdef")
                 else:
                     return ("Remove","build")
             elif(check == "Added"):
-                if((re.match(r'^\S* := \S*', item[1]) != None and item[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', item[1]) != None) and item[1].replace(' ', '').strip().split('+=')[0]):
+                res1 = re.search(r'^\S*\$\((.*)\)\S* := \S*', item[1])
+                res2 = re.search(r'^\S*\$\((.*)\)\S* \+= \S*', item[1])
+                if((res1 != None and res1.group(1) in features) or (res2 != None and res2.group(1) in features)):
                     return ("Added","Mapping")
                 elif(re.match(r'^ifeq \S*', item[1]) != None or re.match(r'^ifneq \S*', item[1]) != None or re.match(r'^ifdef \S*', item[1]) != None):
                     return ("Added","ifdef")
                 else:
+                    print(("Added","build"))
                     return ("Added","build")
 
             else:
-                if((re.match(r'^\S* := \S*', item[1]) != None and item[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', item[1]) != None) and item[1].replace(' ', '').strip().split('+=')[0]):
+                res1 = re.search(r'^\S*\$\((.*)\)\S* := \S*', item[1])
+                res2 = re.search(r'^\S*\$\((.*)\)\S* \+= \S*', item[1])
+                if((res1 != None and res1.group(1) in features) or (res2 != None and res2.group(1) in features)):
+                    # print(res2.group(1), res2.group(1) in features)
+                    # print(("Modify","Mapping"))
                     return ("Modify","Mapping")
                 elif(re.match(r'^ifeq \S*', item[1]) != None or re.match(r'^ifneq \S*', item[1]) != None or re.match(r'^ifdef \S*', item[1]) != None):
                     return ("Modify","ifdef")
                 else:
+                    # print('PLATFORM_LINUX_COMMON' in features)
+                    # print(("Modify","build"))
                     return ("Modify","build")
                 
         else:
@@ -238,7 +249,9 @@ class SPLClassifier:
             if(check == 'Added'):
                 for line in item:
                     line = (line[0], line[1].strip())
-                    if((re.match(r'^\S* := \S*', line[1]) != None and line[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', line[1]) != None) and line[1].replace(' ', '').strip().split('+=')[0]):
+                    res1 = re.search(r'^\S*\$\((.*)\)\S* := \S*', line[1])
+                    res2 = re.search(r'^\S*\$\((.*)\)\S* \+= \S*', line[1])
+                    if((res1 != None and res1.group(1) in features) or (res2 != None and res2.group(1) in features)):
                         partial = ("Added","Mapping")
                         if(partial not in result):
                             result.append(partial)
@@ -247,13 +260,16 @@ class SPLClassifier:
                         if(partial not in result):
                             result.append(partial)
                     else:
-                        partial = ("Added","build")
-                        if(partial not in result):
-                            result.append(partial)
+                        if(line[1] != ''):
+                            partial = ("Added","build")
+                            if(partial not in result):
+                                result.append(partial)
             else:
                 for line in item:
                     line = (line[0], line[1].strip())
-                    if((re.match(r'^\S* := \S*', line[1]) != None and line[1].replace(' ', '').strip().split(':=')[0] not in features) or (re.match(r'^\S* \+= \S*', line[1]) != None) and line[1].replace(' ', '').strip().split('+=')[0]):
+                    res1 = re.search(r'^\S*\$\((.*)\)\S* := \S*', line[1])
+                    res2 = re.search(r'^\S*\$\((.*)\)\S* \+= \S*', line[1])
+                    if((res1 != None and res1.group(1) in features) or (res2 != None and res2.group(1) in features)):
                         partial = ("Remove","Mapping")
                         if(partial not in result):
                             result.append(partial)

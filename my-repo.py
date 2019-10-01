@@ -11,19 +11,26 @@ repositorio = ''
 
 GR = GitRepository('../soletta')
 
-#
+# KCONFIG EXAMPLES
 # d458061abec39e7a0693c49f96b7ab3378c157d9 - only Removeds
 # 2c727429e244c074a45c0d99b8ba57ad7fb6df36 - both (add at final)
 # da5f77ff470f49e90797db27a8923c988c099e96 - replace inside file
 # 9110b309393ec27dee35baf23d1cbefe1a796d8f -
+
+# MAKEFILE EXAMPLES
+# 17022a2622ddce9fbbd478a551f46e639d991cb0
+# e6e17e41bbeb92125541c9cc4c06273ef1566c22
+# ec6c506d1e926efa1007e9b5946d57a5e3f3804a
+# 3e677dd8f3c6427a861a36f139f49c814f5dad88 FUDEU!!!!!! (REVER)
+# 0c45273fb09534946b704fea99f64c7acbb14eea
 
 listaCommits = getManualResults()
 listaCommitResults = ['Hash,author,KC-Tags,MF-Tags\n']
 features = getSPLFeatures(listaCommits)
 
 
-# for commit in RepositoryMining('../soletta',single='da5f77ff470f49e90797db27a8923c988c099e96').traverse_commits():
-for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_commits():
+for commit in RepositoryMining('../soletta',single='0c45273fb09534946b704fea99f64c7acbb14eea').traverse_commits():
+# for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_commits():
     print(commit.hash)
     kconfig_commit_tags = []
     makefile_commit_tags = []
@@ -39,9 +46,9 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
             classifier = SPLClassifier(added, removed, file_source_code)
             files_changing_tags = classifier.classify(modification.filename.lower(),features)
         for file_tag in files_changing_tags:
-            if(modification.filename.lower() == 'kconfig' and (file_tag not in kconfig_commit_tags)):
+            if('kconfig' in modification.filename.lower() and (file_tag not in kconfig_commit_tags)):
                 kconfig_commit_tags.append(file_tag)
-            elif(modification.filename.lower() == 'kconfig' and (file_tag not in kconfig_commit_tags)):
+            elif('makefile' in modification.filename.lower() and (file_tag not in makefile_commit_tags)):
                 makefile_commit_tags.append(file_tag)
     print("Commit {}".format(commit.hash))
     if(len(kconfig_commit_tags) > 0):
@@ -51,7 +58,7 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
     if(len(makefile_commit_tags) > 0):
         makefile_commit_tags = str(makefile_commit_tags).replace(',',' |')
     else:
-        makefile_commit_tags = 'no-tag-changed'
+        makefile_commit_tags = 'rename'
     mountStr = '{},{},{},{}\n'.format(commit.hash,commit.author.name,kconfig_commit_tags,makefile_commit_tags)    
     listaCommitResults.append(mountStr)
 
