@@ -39,14 +39,26 @@ class SPLClassifier:
             newRemoved = []
             newModified = []
             tam,listaLonga,listaCurta = (len(added)-1,added,removed) if len(added) > len(removed) else (len(removed)-1,removed,added)
+            # print(tam)
+            # print(listaLonga)
+            # print(listaCurta)
             for i in range(tam+1):
+                # print('ITERANDO', i)
                 j = i
                 currentLongo = listaLonga[i]
                 foundModify = False
-                while(j < len(listaCurta) and not foundModify):
-                    currentCurto = listaCurta[j]
-                    if(((currentCurto[0]+correctLines == currentLongo[0]+correctLines) or (currentCurto[1] == currentLongo[1])) and currentCurto[1] != ''):
-                        if(file_type == 'kconfig'):
+                while(j <= len(listaCurta) and not foundModify):
+                    if(j < len(listaCurta)):
+                        currentCurto = listaCurta[j]
+                    else:
+                        currentCurto = listaCurta[j-1]
+                    # print(currentCurto[0]+correctLines, currentLongo[0])
+                    # print(currentCurto[0]+correctLines == currentLongo[0])
+                    if(((currentCurto[0]+correctLines == currentLongo[0]) or (currentCurto[1] == currentLongo[1])) and currentCurto[1] != ''):
+                        # print("SOU MODIFY")
+                        # print(file_type)
+                        # print('kconfig' in file_type)
+                        if('kconfig' in file_type):
                             value = self.kconfigClass(currentCurto,'Modify')
                         else:
                             value = self.classifyMakefile(currentCurto,'Modify',features)
@@ -56,16 +68,16 @@ class SPLClassifier:
                     j += 1
                 if(not foundModify and currentLongo[1] != ''):
                     if(listaLonga == added):
-                        if(file_type == 'kconfig'):
+                        if('kconfig' in file_type):
                             value = self.kconfigClass(currentLongo,'Added')
-                        else :
+                        else:
                             value = self.classifyMakefile(currentLongo,'Added',features)
                         if(value not in newAdded):
                             newAdded.append(value)
                         correctLines += 1
                             
                     else:
-                        if(file_type == 'kconfig'):
+                        if('kconfig' in file_type):
                             value = self.kconfigClass(currentLongo,'Removed')
                         else:
                             value = self.classifyMakefile(currentLongo,'Removed',features)
