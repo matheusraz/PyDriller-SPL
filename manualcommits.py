@@ -10,3 +10,10 @@ def getManualResults():
         if(len(data['FM'][i]) > 0):
             allHashs.append(data['FM'][i][0])
     return allHashs
+
+def getMakeFileResultsManual():
+    arq = open('mf-manual.csv', 'r')
+    commits = []
+    for line in arq:
+        commits.append(line.split(',')[0])
+    return commits

@@ -1,7 +1,7 @@
 from pydriller import RepositoryMining, GitRepository
 import datetime
 from splclassifier import SPLClassifier
-from manualcommits import getManualResults
+from manualcommits import getManualResults, getMakeFileResultsManual
 from features import getSPLFeatures
 
 dt1 = datetime.datetime(2017, 3, 8, 0, 0, 0)
@@ -25,12 +25,13 @@ GR = GitRepository('../soletta')
 # 0c45273fb09534946b704fea99f64c7acbb14eea
 
 listaCommits = getManualResults()
+listaCommitsMakeFile = getMakeFileResultsManual()
 listaCommitResults = ['Hash,author,KC-Tags,MF-Tags\n']
 features = getSPLFeatures(listaCommits)
 
 
 # for commit in RepositoryMining('../soletta',single='3e677dd8f3c6427a861a36f139f49c814f5dad88').traverse_commits():
-for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_commits():
+for commit in RepositoryMining('../soletta',only_commits=listaCommitsMakeFile).traverse_commits():
     print(commit.hash)
     kconfig_commit_tags = []
     makefile_commit_tags = []
