@@ -1,7 +1,8 @@
+import sys
 from pydriller import RepositoryMining, GitRepository
 import datetime
 from splclassifier import SPLClassifier
-from manualcommits import getManualResults, getMakeFileResultsManual
+from manualcommits import getManualResultsKconfig, getMakeFileResultsManual
 from features import getSPLFeatures
 
 dt1 = datetime.datetime(2017, 3, 8, 0, 0, 0)
@@ -24,15 +25,20 @@ GR = GitRepository('../soletta')
 # 3e677dd8f3c6427a861a36f139f49c814f5dad88 FUDEU!!!!!! (REVER)
 # 0c45273fb09534946b704fea99f64c7acbb14eea
 
-listaCommits = getManualResults()
+isMakeFile = sys.argv[1]
+listaCommitsKconfig = getManualResultsKconfig()
 listaCommitsMakeFile = getMakeFileResultsManual()
+if(isMakeFile == 'True'):
+    listaCommits = listaCommitsMakeFile
+else:
+    listaCommits = listaCommitsKconfig
 listaCommitResults = ['Hash,author,KC-Tags,MF-Tags\n']
 features = getSPLFeatures(listaCommits)
 
 
-# for commit in RepositoryMining('../soletta',single='3e677dd8f3c6427a861a36f139f49c814f5dad88').traverse_commits():
-for commit in RepositoryMining('../soletta',only_commits=listaCommitsMakeFile).traverse_commits():
-    print(commit.hash)
+for commit in RepositoryMining('../soletta',single='3e677dd8f3c6427a861a36f139f49c814f5dad88').traverse_commits():
+# for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_commits():
+    # print(commit.hash)
     kconfig_commit_tags = []
     makefile_commit_tags = []
     commitResults = []
@@ -51,7 +57,7 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommitsMakeFile).t
                 kconfig_commit_tags.append(file_tag)
             elif('makefile' in modification.filename.lower() and (file_tag not in makefile_commit_tags)):
                 makefile_commit_tags.append(file_tag)
-    print("Commit {}".format(commit.hash))
+    # print("Commit {}".format(commit.hash))
     if(len(kconfig_commit_tags) > 0):
         kconfig_commit_tags = str(kconfig_commit_tags).replace(',',' |')
     else:

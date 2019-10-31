@@ -39,11 +39,7 @@ class SPLClassifier:
             newRemoved = []
             newModified = []
             tam,listaLonga,listaCurta = (len(added)-1,added,removed) if len(added) > len(removed) else (len(removed)-1,removed,added)
-            # print(tam)
-            # print(listaLonga)
-            # print(listaCurta)
             for i in range(tam+1):
-                # print('ITERANDO', i)
                 j = i
                 currentLongo = listaLonga[i]
                 foundModify = False
@@ -52,12 +48,7 @@ class SPLClassifier:
                         currentCurto = listaCurta[j]
                     else:
                         currentCurto = listaCurta[j-1]
-                    # print(currentCurto[0]+correctLines, currentLongo[0])
-                    # print(currentCurto[0]+correctLines == currentLongo[0])
                     if(((currentCurto[0]+correctLines == currentLongo[0]) or (currentCurto[1] == currentLongo[1])) and currentCurto[1] != ''):
-                        # print("SOU MODIFY")
-                        # print(file_type)
-                        # print('kconfig' in file_type)
                         if('kconfig' in file_type):
                             value = self.kconfigClass(currentCurto,'Modify')
                         else:
@@ -239,7 +230,6 @@ class SPLClassifier:
                 elif(re.match(r'^ifeq \S*', item[1]) != None or re.match(r'^ifneq \S*', item[1]) != None or re.match(r'^ifdef \S*', item[1]) != None):
                     return ("Added","ifdef")
                 else:
-                    print(("Added","build"))
                     return ("Added","build")
 
             else:

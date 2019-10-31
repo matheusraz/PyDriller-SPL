@@ -35,13 +35,11 @@ st2 = 'I would like to select any values'
 # if(res != None or res2 != None or res3 != None):
 #     print('IFDEF')
 
-dale = 'adfadf-$(KDBUS)-asdfasdfa += asdhfisadhflaskjdf'
-result = re.search(r'\S*\$\((.*)\)\S* \+= \S*', dale)
-if(result):
-    print(result.group(1))
-
-
-
+# dale = 'adfadf-$(KDBUS)-asdfasdfa += asdhfisadhflaskjdf'
+# result = re.search(r'\S*\$\((.*)\)\S* \+= \S*', dale)
+# if(result):
+#     print(result.group(1))
+    
 
 
 # obj-core-$(KDBUS)-extra-cflags := $(SYSTEMD_CFLAGS) -- ANTES
@@ -50,10 +48,11 @@ if(result):
 
 # Mapping - X := / += Y
 
-
-
-
-
-
 # depends on HAVE_NODEJS
 
+
+
+#  ---------------- AM -------------------
+s = '#ifdef \w*'
+res = re.match(r'#ifdef \w*', s)
+print(res)

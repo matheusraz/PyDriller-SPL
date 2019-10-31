@@ -3,7 +3,7 @@ from bson import json_util
 import datetime
 import json
 
-def getManualResults():
+def getManualResultsKconfig():
     data = get_data("results-manual.ods")
     allHashs = []
     for i in range(1,len(data['FM'])-1):
