@@ -168,7 +168,7 @@ class SPLClassifier:
                             if(partial not in result):
                                 result.append(partial) # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
                         else:
-                            partial = ("Added","Depends")
+                            partial = ("New","Depends")
                             if(partial not in result):
                                 result.append(partial)
                     elif(re.match(r'^default \S', line[1]) != None):
@@ -247,14 +247,10 @@ class SPLClassifier:
                 res1 = re.search(r'^\S*\$\((.*)\)\S* := \S*', item[1])
                 res2 = re.search(r'^\S*\$\((.*)\)\S* \+= \S*', item[1])
                 if((res1 != None and res1.group(1) in features) or (res2 != None and res2.group(1) in features)):
-                    # print(res2.group(1), res2.group(1) in features)
-                    # print(("Modify","Mapping"))
                     return ("Modify","Mapping")
                 elif(re.match(r'^ifeq \S*', item[1]) != None or re.match(r'^ifneq \S*', item[1]) != None or re.match(r'^ifdef \S*', item[1]) != None):
                     return ("Modify","ifdef")
                 else:
-                    # print('PLATFORM_LINUX_COMMON' in features)
-                    # print(("Modify","build"))
                     return ("Modify","build")
                 
         else:
