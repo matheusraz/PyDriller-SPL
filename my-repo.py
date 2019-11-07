@@ -57,8 +57,8 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
             file_source_code = modification.source_code.split('\n')
             classifier = SPLClassifier(added, removed, file_source_code)
             files_changing_tags = classifier.classify(modification.filename.lower(),features)
-        elif((re.match(r'\S*\.c', modification.filename.lower()) != None) or re.match(r'\S*\.h', modification.filename.lower()) != None):
-            # print("SOU .c",">>>>>",modification.filename.lower(),">>>>>", modification.change_type.name)
+        # elif((re.match(r'\S*\.c', modification.filename.lower()) != None) or re.match(r'\S*\.h', modification.filename.lower()) != None):
+        else:
             if(modification.change_type.value != 1 and modification.change_type.value != 4):
                 diff = modification.diff
                 parsed_lines = GR.parse_diff(diff)
@@ -91,7 +91,7 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
     if(len(am_commit_tags) > 0):
         am_commit_tags = str(am_commit_tags).replace(',',' |')
     else:
-        am_commit_tags = 'no-tag-changed'
+        am_commit_tags = 'change'
     mountStr = '{},{},{},{},{}\n'.format(commit.hash, commit.author.name, kconfig_commit_tags, makefile_commit_tags, am_commit_tags)
     listaCommitResults.append(mountStr)
 
