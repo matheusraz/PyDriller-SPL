@@ -31,10 +31,13 @@ listaCommitsKconfig = getManualResultsKconfig()
 listaCommitsMakeFile = getMakeFileResultsManual()
 listaCommitsAM = getAMFileResultsManual()
 if(fileKind == 'makefile'):
+    print("SOU MAKEFILE")
     listaCommits = listaCommitsMakeFile
 elif(fileKind == 'kconfig'):
+    print("SOU KCONFIG")
     listaCommits = listaCommitsKconfig
 else:
+    print("SOU AM")
     listaCommits = listaCommitsAM
 listaCommitResults = ['Hash,author,KC-Tags,MF-Tags,AM-Tags\n']
 features = getSPLFeatures(listaCommits)
@@ -59,6 +62,7 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
             files_changing_tags = classifier.classify(modification.filename.lower(),features)
         # elif((re.match(r'\S*\.c', modification.filename.lower()) != None) or re.match(r'\S*\.h', modification.filename.lower()) != None):
         else:
+            print("SOU AM")
             if(modification.change_type.value != 1 and modification.change_type.value != 4):
                 diff = modification.diff
                 parsed_lines = GR.parse_diff(diff)
@@ -78,7 +82,7 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
                 kconfig_commit_tags.append(file_tag)
             elif('makefile' in modification.filename.lower() and (file_tag not in makefile_commit_tags)):
                 makefile_commit_tags.append(file_tag)
-            elif(file_tag not in am_commit_tags):
+            elif('kconfig' not in modification.filename.lower() and 'makefile' not in modification.filename.lower() and file_tag not in am_commit_tags):
                 am_commit_tags.append(file_tag)
     if(len(kconfig_commit_tags) > 0):
         kconfig_commit_tags = str(kconfig_commit_tags).replace(',',' |')
@@ -91,7 +95,7 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
     if(len(am_commit_tags) > 0):
         am_commit_tags = str(am_commit_tags).replace(',',' |')
     else:
-        am_commit_tags = 'change'
+        am_commit_tags = 'no-tag-changed'
     mountStr = '{},{},{},{},{}\n'.format(commit.hash, commit.author.name, kconfig_commit_tags, makefile_commit_tags, am_commit_tags)
     listaCommitResults.append(mountStr)
 
