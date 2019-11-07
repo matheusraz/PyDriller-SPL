@@ -30,7 +30,7 @@ class SPLClassifier:
 
         #Classificação caso só haja adições no arquivo
         elif(len(added) > 0 and len(removed) == 0):
-            if(file_type == 'kconfig'):
+            if('kconfig' in file_type):
                 return self.kconfigClass(added,'Added')
             elif('makefile' in file_type):
                 return self.classifyMakefile(added,'Added',features)
@@ -55,7 +55,7 @@ class SPLClassifier:
                         currentCurto = listaCurta[j-1]
                     if(((currentCurto[0]+correctLines == currentLongo[0]) or (currentCurto[1] == currentLongo[1])) and currentCurto[1] != ''):
                         if('kconfig' in file_type):
-                            value = self.kconfigClass(currentCurto,'Modify')
+                            value = self.kconfigClass(currentCurto,'Modify', currentLongo)
                         elif('makefile' in file_type):
                             value = self.classifyMakefile(currentCurto,'Modify',features)
                         else:
@@ -93,7 +93,7 @@ class SPLClassifier:
             return result
                         
 
-    def kconfigClass(self,item, check):
+    def kconfigClass(self,item, check, before=False):
         if(type(item) != list):
             item = (item[0], item[1].strip())
             if(check == "Removed"):
@@ -139,11 +139,13 @@ class SPLClassifier:
                 elif((re.match(r'^bool \"w+\"', item[1]) != None) or (re.match(r'^option \"w+\"', item[1]) != None) or (re.match(r'^prompt \"w+\"', item[1]) != None)):
                     return ("Modify","Feature")
                 elif(re.match(r'^depends on \S+', item[1]) != None):
-                    if("&&" in item[1]):
+                    before = before[1].replace('\t', '')
+                    if(item[1].count('&&') > before.count('&&')):
                         return ("Added","Depends") # Possiveis = New, Added, Remove e Modify OBS: Added && para junção - New sem &&
+                    elif(item[1].count('&&') < before.count('&&')):
+                        return("Remove", "Depends")
                     else:
                         return ("Modify","Depends")
-                    # return ("Modify","Depends")
                 elif(re.match(r'^default \S', item[1]) != None):
                     return ("Modify","Default")
                 elif(re.match(r'^select \S+', item[1]) != None):
