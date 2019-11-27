@@ -31,13 +31,10 @@ listaCommitsKconfig = getManualResultsKconfig()
 listaCommitsMakeFile = getMakeFileResultsManual()
 listaCommitsAM = getAMFileResultsManual()
 if(fileKind == 'makefile'):
-    print("SOU MAKEFILE")
     listaCommits = listaCommitsMakeFile
 elif(fileKind == 'kconfig'):
-    print("SOU KCONFIG")
     listaCommits = listaCommitsKconfig
 else:
-    print("SOU AM")
     listaCommits = listaCommitsAM
 listaCommitResults = ['Hash,author,KC-Tags,MF-Tags,AM-Tags\n']
 features = getSPLFeatures(listaCommits)
@@ -52,7 +49,7 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
     commitResults = []
     for modification in commit.modifications:
         files_changing_tags = []
-        if(('kconfig' in modification.filename.lower() or 'makefile' in modification.filename.lower()) and modification.change_type.value == 5):
+        if(('kconfig' in modification.filename.lower() or 'makefile' in modification.filename.lower())):
             diff = modification.diff
             parsed_lines = GR.parse_diff(diff)
             added = parsed_lines['added']
@@ -60,9 +57,7 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
             file_source_code = modification.source_code.split('\n')
             classifier = SPLClassifier(added, removed, file_source_code)
             files_changing_tags = classifier.classify(modification.filename.lower(),features)
-        # elif((re.match(r'\S*\.c', modification.filename.lower()) != None) or re.match(r'\S*\.h', modification.filename.lower()) != None):
         else:
-            print("SOU AM")
             if(modification.change_type.value != 1 and modification.change_type.value != 4):
                 diff = modification.diff
                 parsed_lines = GR.parse_diff(diff)
@@ -99,56 +94,5 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
     mountStr = '{},{},{},{},{}\n'.format(commit.hash, commit.author.name, kconfig_commit_tags, makefile_commit_tags, am_commit_tags)
     listaCommitResults.append(mountStr)
 
-arq = open('automated-results.csv','w')
+arq = open('automated-results-{}.csv'.format(fileKind),'w')
 arq.writelines(listaCommitResults)
-    
-
-
-# Commit adhfaslkdgsakjdf:
-#     arquivo X (mod): ("Remove", "Depends"), ("Added", "Feature")
-#     arquivo Y (mod): ("Modify", "menu"), ("Remove", "Depends")
-
-# Commit adhfaslkdgsakjdf: [("Remove", "Depends"), ("Added", "Feature"), ("Modify", "menu")]
-
-# Teste
-# menu "Bindings"	
-# config USE_NODEJS	
-# 	bool "Node.js bindings"	
-# 	depends on HAVE_NODEJS && HAVE_NODEJS_NPM && HAVE_NODE_GYP
-# 	default n
-# 	help	
-# 		Enable Node.js bindings
-# endmenu
-
-# if(condition1 && condition2)
-
-# if(condiiton1){
-#     if(condition2)
-# }
-
-
-
-
-# obj-$(PRINTER) += printers.mod
-
-
-# obj-$(PARSERS) += parsers.mod
-# obj-$(PARSERS) += $(LALALA)
-
-
-
-# ifdef ($(IDK),)
-# -include LALALA.gen
-# endif
-
-
-# ifneq ($(HAVE_KCONFIG_CONFIG),)
-# -include Makefile.gen
-# endif
-
-
-
-
-
-
-
