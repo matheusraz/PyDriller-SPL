@@ -69,7 +69,7 @@ for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_
                 files_changing_tags.append('changeAsset')
             else:
                 if(modification.change_type.value == 1):
-                    files_changing_tags.append('addAsset')
+                    files_changing_tags.append('AddAsset')
                 elif(modification.change_type.value == 4):
                     files_changing_tags.append('removeAsset')
         for file_tag in files_changing_tags:

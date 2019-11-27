@@ -1,8 +1,8 @@
+from pyexcel_ods import get_data
 import sys
 
-auto = open('automated-results.csv','r')
-# karine = open('resultado_manual_formatado.csv','r')
-karine = open('mf-manual.csv','r')
+karine = open('resultado_manual_formatado.csv','r')
+# karine = open('mf-manual.csv','r')
 
 def separaClassificações(lista):
     retorno = []
@@ -19,23 +19,34 @@ def separaClassificações(lista):
 
 
 
-def acertos(isMakeFile=False):
+def acertos(kind=False):
     automaticos = []
     manuais = []
     commits = []
 
     for lines in auto:
-        if(isMakeFile == 'True'):
+        if(kind == 'makefile'):
             val = lines.split(',')[3]
-        else:
+        elif(kind == 'kconfig'):
             val = lines.split(',')[2]
+        else:
+            val = lines.split(',')[4]
         commits.append(lines.split(',')[0])
-        automaticos.append(val.replace(' ',''))
-
-    for lines in karine:
-        val = lines.split(',')[2]
-        manuais.append(val.replace(' ',''))
+        automaticos.append(val.replace(' ','').replace('\n',''))
     
+    automaticos.pop(0)
+
+    if(kind != 'assets'):
+        for lines in karine:
+            val = lines.split(',')[2]
+            manuais.append(val.replace(' ','').replace('\n',''))
+    else:
+        data = get_data("results-manual.ods")
+        for i in range(1,len(data['AM'])-1):
+            if(len(data['AM'][i]) > 0):
+                currentAM = data['AM'][i][20].split(';')
+                currentAM = str(currentAM).replace(' ', '').replace(',','|')
+                manuais.append(currentAM)
 
     # COMPARAÇÃO DA STRING COMPLETA
     acertos = 0
@@ -67,4 +78,6 @@ def acertos(isMakeFile=False):
     print('Taxa de acerto por comparação total: {0:.2f}%'.format(stringCompleta))
     print('Taxa de acerto por subconjuntos: {0:.2f}%'.format(acertos/totalTags*100))
 
-acertos(sys.argv[1])
+kind = sys.argv[1]
+auto = open('automated-results-{}.csv'.format(kind),'r')
+acertos(kind)

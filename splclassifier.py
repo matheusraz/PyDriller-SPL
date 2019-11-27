@@ -300,14 +300,17 @@ class SPLClassifier:
             if(check == "Removed"):
                 if(re.match(r'^#ifeq \S*', item[1]) != None or re.match(r'^#ifneq \S*', item[1]) != None or re.match(r'^#ifdef \S*', item[1]) != None):
                     return ("Remove","ifdef")
+                    # return 'ifdef'
                     
             elif(check == "Added"):
                 if(re.match(r'^#ifeq \S*', item[1]) != None or re.match(r'^#ifneq \S*', item[1]) != None or re.match(r'^#ifdef \S*', item[1]) != None):
                     return ("Added","ifdef")
+                    # return 'ifdef'
 
             else:
                 if(re.match(r'^#ifeq \S*', item[1]) != None or re.match(r'^#ifneq \S*', item[1]) != None or re.match(r'^#ifdef \S*', item[1]) != None):
                     return ("Modify","ifdef")
+                    # return 'ifdef'
                 
         else:
             result = []
@@ -315,12 +318,14 @@ class SPLClassifier:
                 for line in item:
                     if(re.match(r'^#ifeq \S*', line[1]) != None or re.match(r'^#ifneq \S*', line[1]) != None or re.match(r'^#ifdef \S*', line[1]) != None):
                         partial = ("Added","ifdef")
+                        # partial = 'ifdef'
                         if(partial not in result):
                             result.append(partial)
             else:
                 for line in item:
                     if(re.match(r'^#ifeq \S*', line[1]) != None or re.match(r'^#ifneq \S*', line[1]) != None or re.match(r'^#ifdef \S*', line[1]) != None):
                         partial = ("Remove","ifdef")
+                        # partial = 'ifdef'
                         if(partial not in result):
                             result.append(partial)
             return result
