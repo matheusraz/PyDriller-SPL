@@ -1,8 +1,8 @@
 from pyexcel_ods import get_data
 import sys
 
-karine = open('resultado_manual_formatado.csv','r')
-# karine = open('mf-manual.csv','r')
+# karine = open('resultado_manual_formatado.csv','r')
+karine = open('mf-manual.csv','r')
 
 def separaClassificações(lista):
     retorno = []
@@ -34,7 +34,6 @@ def acertos(kind=False):
         commits.append(lines.split(',')[0])
         automaticos.append(val.replace(' ','').replace('\n',''))
     
-    automaticos.pop(0)
 
     if(kind != 'assets'):
         for lines in karine:
@@ -47,6 +46,7 @@ def acertos(kind=False):
                 currentAM = data['AM'][i][20].split(';')
                 currentAM = str(currentAM).replace(' ', '').replace(',','|')
                 manuais.append(currentAM)
+        automaticos.pop(0)
 
     # COMPARAÇÃO DA STRING COMPLETA
     acertos = 0
