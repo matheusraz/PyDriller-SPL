@@ -1,8 +1,9 @@
 from pyexcel_ods import get_data
 import sys
 
-# karine = open('resultado_manual_formatado.csv','r')
-karine = open('mf-manual.csv','r')
+karine = open('resultado_manual_formatado.csv','r') # Kconfig
+# karine = open('mf-manual.csv','r') # Makefile
+# karine = open('am-formata.csv','r') # Assets
 
 def separaClassificações(lista):
     retorno = []
@@ -35,18 +36,18 @@ def acertos(kind=False):
         automaticos.append(val.replace(' ','').replace('\n',''))
     
 
-    if(kind != 'assets'):
-        for lines in karine:
-            val = lines.split(',')[2]
-            manuais.append(val.replace(' ','').replace('\n',''))
-    else:
-        data = get_data("results-manual.ods")
-        for i in range(1,len(data['AM'])-1):
-            if(len(data['AM'][i]) > 0):
-                currentAM = data['AM'][i][20].split(';')
-                currentAM = str(currentAM).replace(' ', '').replace(',','|')
-                manuais.append(currentAM)
-        automaticos.pop(0)
+    # if(kind != 'assets'):
+    for lines in karine:
+        val = lines.split(',')[2]
+        manuais.append(val.replace(' ','').replace('\n',''))
+    # else:
+    #     data = get_data("results-manual.ods")
+    #     for i in range(1,len(data['AM'])-1):
+    #         if(len(data['AM'][i]) > 0):
+    #             currentAM = data['AM'][i][20].split(';')
+    #             currentAM = str(currentAM).replace(' ', '').replace(',','|')
+    #             manuais.append(currentAM)
+    #     automaticos.pop(0)
 
     # COMPARAÇÃO DA STRING COMPLETA
     acertos = 0

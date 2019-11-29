@@ -6,6 +6,7 @@ class SPLClassifier:
         self.added = added
         self.removed = removed
         self.source_code = source_code
+        self.isArq = False
     
     def setAdded(self,lista):
         self.added = lista
@@ -14,6 +15,10 @@ class SPLClassifier:
         self.removed = lista
     
     def classify(self, file_type, features):
+        if(file_type == 'makefile.targets'):
+            self.isArq = True
+        else:
+            self.isArq = False
         removed = self.removed
         added = self.added
         # print(removed, added)
@@ -183,9 +188,7 @@ class SPLClassifier:
                             if(partial not in result):
                                 result.append(partial)
                     elif(re.match(r'^select \S+', line[1]) != None):
-                        # Verificar se é new ou added
-                        # return("New", "Select")
-                        if(re.match(r'^select \S+', self.source_code[line[0]-2]) != None):
+                        if(re.match(r'^select \S+', self.source_code[line[0]-2].strip()) != None):
                             partial = ("Added","Select")
                             if(partial not in result):
                                 result.append(partial) # Possiveis = New, Added, Remove e Modify OBS: Added para Anterior havendo select
@@ -217,7 +220,7 @@ class SPLClassifier:
                         partial = ("Remove","Default")
                         if(partial not in result):
                             result.append(partial)
-                    elif(re.match(r'^default \S', line[1]) != None):
+                    elif(re.match(r'^select \S', line[1]) != None):
                         partial = ("Remove","Select")
                         if(partial not in result):
                             result.append(partial)
@@ -226,6 +229,7 @@ class SPLClassifier:
     def classifyMakefile(self, item, check, features):
         if(type(item) != list):
             item = (item[0], item[1].strip())
+            # if(self.isArq): print(item, check)
             if(check == "Removed"):
                 res1 = re.search(r'^\S*\$\((.*)\)\S* := \S*', item[1])
                 res2 = re.search(r'^\S*\$\((.*)\)\S* \+= \S*', item[1])

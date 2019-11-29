@@ -40,7 +40,7 @@ listaCommitResults = ['Hash,author,KC-Tags,MF-Tags,AM-Tags\n']
 features = getSPLFeatures(listaCommits)
 
 
-# for commit in RepositoryMining('../soletta',single='fa7f6e4c8099e18ec7381605e392a6c8cdf24cf2').traverse_commits():
+# for commit in RepositoryMining('../soletta',single='c823fdfa5ab5e7255d61f3f85d5a00751c209985').traverse_commits():
 for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_commits():
     print(commit.hash)
     kconfig_commit_tags = []
