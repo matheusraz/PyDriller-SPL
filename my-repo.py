@@ -40,6 +40,7 @@ listaCommitResults = ['Hash,author,KC-Tags,MF-Tags,AM-Tags\n']
 features = getSPLFeatures(listaCommits)
 
 
+
 # for commit in RepositoryMining('../soletta',single='c823fdfa5ab5e7255d61f3f85d5a00751c209985').traverse_commits():
 for commit in RepositoryMining('../soletta',only_commits=listaCommits).traverse_commits():
     print(commit.hash)
